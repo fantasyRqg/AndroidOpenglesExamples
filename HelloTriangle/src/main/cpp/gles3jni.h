@@ -75,7 +75,8 @@ class Renderer {
 public:
     virtual ~Renderer();
     void resize(int w, int h);
-    void render();
+
+    virtual void render();
 
 protected:
     Renderer();

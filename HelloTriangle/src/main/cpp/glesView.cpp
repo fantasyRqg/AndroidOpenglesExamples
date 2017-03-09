@@ -3,17 +3,13 @@
 
 #include <jni.h>
 #include <string>
-#include <android/log.h>
+#include <common.h>
+
 #include "gles3jni.h"
+#include "RenderSelf.h"
 
 
 #define TAG "GLES3VIEW"
-
-#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, TAG, __VA_ARGS__)
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG , TAG, __VA_ARGS__)
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO , TAG, __VA_ARGS__)
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN , TAG, __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR , TAG, __VA_ARGS__)
 
 
 struct fields_t {
@@ -28,8 +24,8 @@ static void printGlString(const char *name, GLenum s);
 #define JNI_RENDEERER_JNI_ID "mJniRenderer"
 
 
-Renderer *getJniRenerer(JNIEnv *env, jobject thiz) {
-    return (Renderer *) env->GetLongField(thiz, fields.jniRenderer);
+RenderSelf *getJniRenerer(JNIEnv *env, jobject thiz) {
+    return (RenderSelf *) env->GetLongField(thiz, fields.jniRenderer);
 }
 
 void nativeClassInit(JNIEnv *env, jclass clazz) {
@@ -43,7 +39,7 @@ void printGlString(const char *name, GLenum s) {
 }
 
 void init(JNIEnv *env, jobject thiz) {
-    Renderer *pRender = getJniRenerer(env, thiz);
+    RenderSelf *pRender = getJniRenerer(env, thiz);
     if (pRender) {
         delete (pRender);
         pRender = NULL;
@@ -54,7 +50,7 @@ void init(JNIEnv *env, jobject thiz) {
 //    printGlString("Renderer", GL_RENDERER);
 //    printGlString("Extensions", GL_EXTENSIONS);
 
-    pRender = createES3Renderer();
+    pRender = new RenderSelf();
 
     LOGI("init %d", pRender);
 
@@ -63,7 +59,7 @@ void init(JNIEnv *env, jobject thiz) {
 
 void step(JNIEnv *env, jobject thiz) {
 
-    Renderer *p = getJniRenerer(env, thiz);
+    RenderSelf *p = getJniRenerer(env, thiz);
 
     if (p) {
         p->render();
@@ -72,7 +68,7 @@ void step(JNIEnv *env, jobject thiz) {
 
 
 void destroy(JNIEnv *env, jobject thiz) {
-    Renderer *p = getJniRenerer(env, thiz);
+    RenderSelf *p = getJniRenerer(env, thiz);
 
 
     LOGI("destroy %d", p);
@@ -86,7 +82,7 @@ void destroy(JNIEnv *env, jobject thiz) {
 }
 
 void resize(JNIEnv *env, jobject thiz, jint width, jint height) {
-    Renderer *p = getJniRenerer(env, thiz);
+    RenderSelf *p = getJniRenerer(env, thiz);
 
     if (p) {
         p->resize(width, height);

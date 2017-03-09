@@ -10,25 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="2">
+        >
 
         <rqg.fantasy.androidopenglexamples.GLES3JniView
             android:id="@+id/gles1"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:background="@color/colorPrimaryDark"
+            android:layout_height="match_parent"
             />
 
-        <rqg.fantasy.androidopenglexamples.GLES3JniView
-            android:id="@+id/gles2"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
 
     </LinearLayout>
 </layout>

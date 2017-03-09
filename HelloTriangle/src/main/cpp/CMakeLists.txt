@@ -37,6 +37,18 @@ target_link_libraries(es-utils
         ${LOG_LIB})
 
 
+add_library(glCommon STATIC
+        ${EXTERNAL_DIR}/common/common.cpp
+        )
+
+
+target_link_libraries(glCommon
+        android
+        EGL
+        GLESv3
+        ${LOG_LIB})
+
+########################################################################
 include_directories(
         ${EXTERNAL_DIR}/glm
 )
@@ -47,14 +59,17 @@ add_library(glesView SHARED
         Hello_Triangle.c
         RendererES3.cpp
         gles3jni.cpp
+        RenderSelf.cpp
         )
 
 target_include_directories(glesView PRIVATE
         ${EXTERNAL_DIR}/native_app_glue
         ${EXTERNAL_DIR}/esUtils
+        ${EXTERNAL_DIR}/common
         )
 
 
 target_link_libraries(glesView
         es-utils
+        glCommon
         ${LOG_LIB})

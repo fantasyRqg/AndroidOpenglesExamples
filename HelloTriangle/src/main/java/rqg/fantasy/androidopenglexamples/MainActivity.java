@@ -24,7 +24,6 @@ public class MainActivity extends Activity {
         super.onResume();
 
         mActivityMainBinding.gles1.onResume();
-        mActivityMainBinding.gles2.onResume();
     }
 
 
@@ -33,7 +32,6 @@ public class MainActivity extends Activity {
         super.onPause();
         mActivityMainBinding.gles1.onPause();
 
-        mActivityMainBinding.gles2.onPause();
 
     }
 
@@ -42,6 +40,5 @@ public class MainActivity extends Activity {
         super.onDestroy();
 
         mActivityMainBinding.gles1.onDestroy();
-        mActivityMainBinding.gles2.onDestroy();
     }
 }

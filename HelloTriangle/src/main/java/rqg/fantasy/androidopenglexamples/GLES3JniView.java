@@ -3,6 +3,7 @@ package rqg.fantasy.androidopenglexamples;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
@@ -14,6 +15,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 
 public class GLES3JniView extends GLSurfaceView {
+    private static final String TAG = "GLES3JniView";
     /**
      * These fields are used by native code, do not access or modify.
      */
@@ -58,6 +60,8 @@ public class GLES3JniView extends GLSurfaceView {
 
         @Override
         public void onSurfaceChanged(GL10 gl, int width, int height) {
+            Log.d(TAG, "onSurfaceChanged() called with: gl = [" + gl + "], width = [" + width + "], height = [" + height + "]");
+
             GLES3JniView thiz = mThiz.get();
             if (thiz != null) thiz.resize(width, height);
         }

@@ -16,7 +16,6 @@
 
 #include "gles3jni.h"
 #include <EGL/egl.h>
-#include <glm/glm.hpp>
 
 #define STR(s) #s
 #define STRV(s) STR(s)
@@ -53,8 +52,6 @@ public:
     RendererES3();
 
     virtual ~RendererES3();
-
-    glm::mat4 test;
 
     bool init();
 
