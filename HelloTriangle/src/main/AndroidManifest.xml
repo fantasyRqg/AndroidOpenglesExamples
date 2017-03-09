@@ -16,22 +16,21 @@
         <activity android:name="android.app.NativeActivity">
             <meta-data
                 android:name="android.app.lib_name"
-                android:value="native-lib"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".MainActivity"
-            android:icon="@color/colorAccent">
+                android:value="glesView"/>
             <!--<intent-filter>-->
             <!--<action android:name="android.intent.action.MAIN"/>-->
 
             <!--<category android:name="android.intent.category.LAUNCHER"/>-->
             <!--</intent-filter>-->
+        </activity>
+
+        <activity
+            android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
     </application>
 

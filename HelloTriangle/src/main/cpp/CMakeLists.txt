@@ -42,17 +42,19 @@ include_directories(
 )
 
 
-add_library(native-lib SHARED
-        native-lib.cpp
+add_library(glesView SHARED
+        glesView.cpp
         Hello_Triangle.c
+        RendererES3.cpp
+        gles3jni.cpp
         )
 
-target_include_directories(native-lib PRIVATE
+target_include_directories(glesView PRIVATE
         ${EXTERNAL_DIR}/native_app_glue
         ${EXTERNAL_DIR}/esUtils
         )
 
 
-target_link_libraries(native-lib
+target_link_libraries(glesView
         es-utils
         ${LOG_LIB})
