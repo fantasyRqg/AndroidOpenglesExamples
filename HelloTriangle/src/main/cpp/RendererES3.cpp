@@ -47,7 +47,7 @@ static const char FRAGMENT_SHADER[] =
                 "    outColor = vColor;\n"
                 "}\n";
 
-class RendererES3 : public Renderer {
+class RendererES3 : public RendererTest {
 public:
     RendererES3();
 
@@ -76,7 +76,7 @@ private:
     GLuint mVBState;
 };
 
-Renderer *createES3Renderer() {
+RendererTest *createES3Renderer() {
     RendererES3 *renderer = new RendererES3;
     if (!renderer->init()) {
         delete renderer;

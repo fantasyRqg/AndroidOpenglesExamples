@@ -117,7 +117,7 @@ GLuint createProgram(const char *vtxSrc, const char *fragSrc) {
 
 // ----------------------------------------------------------------------------
 
-Renderer::Renderer()
+RendererTest::RendererTest()
         : mNumInstances(0),
           mLastFrameNs(0) {
     memset(mScale, 0, sizeof(mScale));
@@ -125,10 +125,10 @@ Renderer::Renderer()
     memset(mAngles, 0, sizeof(mAngles));
 }
 
-Renderer::~Renderer() {
+RendererTest::~RendererTest() {
 }
 
-void Renderer::resize(int w, int h) {
+void RendererTest::resize(int w, int h) {
     auto offsets = mapOffsetBuf();
     calcSceneParams(w, h, offsets);
     unmapOffsetBuf();
@@ -144,7 +144,7 @@ void Renderer::resize(int w, int h) {
     glViewport(0, 0, w, h);
 }
 
-void Renderer::calcSceneParams(unsigned int w, unsigned int h,
+void RendererTest::calcSceneParams(unsigned int w, unsigned int h,
                                float *offsets) {
     // number of cells along the larger screen dimension
     const float NCELLS_MAJOR = MAX_INSTANCES_PER_SIDE;
@@ -185,7 +185,7 @@ void Renderer::calcSceneParams(unsigned int w, unsigned int h,
     mScale[minor] = 0.5f * CELL_SIZE * scene2clip[1];
 }
 
-void Renderer::step() {
+void RendererTest::step() {
     timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
     auto nowNs = now.tv_sec * 1000000000ull + now.tv_nsec;
@@ -217,7 +217,7 @@ void Renderer::step() {
     mLastFrameNs = nowNs;
 }
 
-void Renderer::render() {
+void RendererTest::render() {
     step();
 
     glClearColor(0.2f, 0.2f, 0.3f, 1.0f);

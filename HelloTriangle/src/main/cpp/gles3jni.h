@@ -71,15 +71,15 @@ extern GLuint createProgram(const char* vtxSrc, const char* fragSrc);
 // ----------------------------------------------------------------------------
 // Interface to the ES2 and ES3 renderers, used by JNI code.
 
-class Renderer {
+class RendererTest {
 public:
-    virtual ~Renderer();
+    virtual ~RendererTest();
     void resize(int w, int h);
 
     virtual void render();
 
 protected:
-    Renderer();
+    RendererTest();
 
     // return a pointer to a buffer of MAX_INSTANCES * sizeof(vec2).
     // the buffer is filled with per-instance offsets, then unmapped.
@@ -103,7 +103,7 @@ private:
     float mAngles[MAX_INSTANCES];
 };
 
-extern Renderer* createES2Renderer();
-extern Renderer* createES3Renderer();
+extern RendererTest* createES2Renderer();
+extern RendererTest* createES3Renderer();
 
 #endif // GLES3JNI_H

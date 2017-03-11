@@ -1,1 +1,1 @@
-include ':HelloTriangle'
+include ':HelloTriangle', ':nativeview'

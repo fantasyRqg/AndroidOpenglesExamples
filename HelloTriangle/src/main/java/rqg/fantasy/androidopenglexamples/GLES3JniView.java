@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.SurfaceHolder;
 
 import java.lang.ref.WeakReference;
 
@@ -81,6 +82,9 @@ public class GLES3JniView extends GLSurfaceView {
     private native void resize(int width, int height);
 
     private native void destroy();
+
+    private native void nativeSurfaceCreated(SurfaceHolder holder);
+
 
     private static native void nativeClassInit();
 

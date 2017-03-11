@@ -1,25 +1,10 @@
 //
-// Created by ranqingguo on 3/9/17.
+// Created by ranqingguo on 3/10/17.
 //
 
-#include "RenderSelf.h"
+#include "TriangleRenderer.h"
 
-RenderSelf::RenderSelf()
-        : mEglContext(eglGetCurrentContext()) {
-
-    init();
-
-}
-
-RenderSelf::~RenderSelf() {
-    glDeleteProgram(mProgram);
-    glDeleteVertexArrays(1, &mVertexArray);
-    glDeleteBuffers(1, &mVertexBuffer);
-}
-
-void RenderSelf::init() {
-
-
+bool TriangleRenderer::setUpInternal() {
     char vertexShaderStr[] = "#version 300 es\n"
             "\n"
             "layout(location = 0) in vec3 vPosition;\n"
@@ -48,14 +33,12 @@ void RenderSelf::init() {
     const char *pTmpv = vertexShaderStr;
     glShaderSource(vertexSahder, 1, (const GLchar *const *) &pTmpv, NULL);
     glCompileShader(vertexSahder);
-    glCommon::checkShaderAndPrint(vertexSahder);
 
     const char *pTmpf = fShaderStr;
 
     fragmentSahder = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentSahder, 1, (const GLchar *const *) &pTmpf, NULL);
     glCompileShader(fragmentSahder);
-    glCommon::checkShaderAndPrint(fragmentSahder);
 
 
     mProgram = glCreateProgram();
@@ -63,7 +46,6 @@ void RenderSelf::init() {
     glAttachShader(mProgram, fragmentSahder);
 
     glLinkProgram(mProgram);
-    glCommon::checkProgramAndPrint(mProgram);
 
 
     ///////////////////////////////////////////
@@ -81,32 +63,21 @@ void RenderSelf::init() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vVertices), (const void *) vVertices,
                  GL_STATIC_DRAW);
 
-
-    glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
-
-
+    return true;
 }
 
+bool TriangleRenderer::tearDownInternal() {
+    glDeleteProgram(mProgram);
+    glDeleteVertexArrays(1, &mVertexArray);
+    glDeleteBuffers(1, &mVertexBuffer);
+    return true;
+}
 
-void RenderSelf::render() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+bool TriangleRenderer::renderInternal() {
     glUseProgram(mProgram);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glDrawArrays(GL_TRIANGLES, 0, 3);
-    glCommon::checkGlError("glDrawArrays");
+    return true;
 }
-
-
-void RenderSelf::initEGL() {
-
-
-}
-
-void RenderSelf::resize(int w, int h) {
-    glViewport(0, 0, w, h);
-}
-
-
