@@ -31,7 +31,6 @@ private:
     GLuint mVertexArray;
     GLuint mVertexBuffer;
 
-    EGLSurface mSurface;
 };
 
 #endif //ANDROIDOPENGLEXAMPLES_RENDERSELF_H

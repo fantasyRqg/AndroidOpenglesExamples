@@ -81,3 +81,7 @@ bool TriangleRenderer::renderInternal() {
     glDrawArrays(GL_TRIANGLES, 0, 3);
     return true;
 }
+
+TriangleRenderer::~TriangleRenderer() {
+
+}

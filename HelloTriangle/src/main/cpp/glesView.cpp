@@ -52,8 +52,6 @@ void init(JNIEnv *env, jobject thiz) {
 
     pRender = new RenderSelf();
 
-    LOGI("init %d", pRender);
-
     env->SetLongField(thiz, fields.jniRenderer, (jlong) pRender);
 }
 
@@ -70,8 +68,6 @@ void step(JNIEnv *env, jobject thiz) {
 void destroy(JNIEnv *env, jobject thiz) {
     RenderSelf *p = getJniRenerer(env, thiz);
 
-
-    LOGI("destroy %d", p);
 
     if (p) {
         delete (p);

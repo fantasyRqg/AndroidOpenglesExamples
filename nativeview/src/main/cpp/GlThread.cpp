@@ -5,14 +5,15 @@
 #include "GlThread.h"
 #include <iostream>
 
+#undef  TAG
 #define TAG "GLThread"
 
 #define FRAME_RATE 30
 
 GlThread::GlThread(EGLWrapper *eglWrapper) :
-        mEglWrapper(eglWrapper),
         thread(&GlThread::run, this) {
 
+    mEglWrapper = eglWrapper;
 }
 
 void GlThread::run() {

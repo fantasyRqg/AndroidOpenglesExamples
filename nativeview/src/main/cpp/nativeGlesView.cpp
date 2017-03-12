@@ -11,6 +11,7 @@
 #include "renderer/TriangleRenderer.h"
 
 
+#undef TAG
 #define TAG "NativeGLESView"
 
 
@@ -39,7 +40,7 @@ void nativeClassInit(JNIEnv *env, jclass clazz) {
 }
 
 void surfaceCreated(JNIEnv *env, jobject thiz, jobject surface) {
-    std::vector<Renderer *> renders(1);
+    std::vector<Renderer *> renders;
 
 
     renders.push_back(new TriangleRenderer());

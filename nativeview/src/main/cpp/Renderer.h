@@ -12,6 +12,9 @@
 class Renderer {
 public:
 
+
+    virtual ~Renderer();
+
     int getZOrder() const;
 
     void setZOrder(int ZOrder);

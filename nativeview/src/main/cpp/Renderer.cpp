@@ -5,8 +5,6 @@
 #include "Renderer.h"
 
 
-
-
 int Renderer::getZOrder() const {
     return mZOrder;
 }
@@ -51,5 +49,10 @@ bool Renderer::operator=(const Renderer &renderer) const {
 bool Renderer::operator<(const Renderer &renderer) const {
     return false;
 }
+
+Renderer::~Renderer() {
+
+}
+
 
 
