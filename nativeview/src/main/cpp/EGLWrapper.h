@@ -11,6 +11,8 @@
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 #include <common.h>
+#include <memory>
+
 
 #include "EglCommonDefine.h"
 #include "Renderer.h"
@@ -22,7 +24,7 @@
 class EGLWrapper {
 public:
 
-    EGLWrapper(EGLNativeWindowType window, std::vector<Renderer *> renders);
+    EGLWrapper(EGLNativeWindowType window, std::vector<std::unique_ptr<Renderer>> renders);
 
     ~EGLWrapper();
 
@@ -52,7 +54,7 @@ protected:
     int mWindowWidth;
     int mWindowHeight;
 
-    std::vector<Renderer *> mRenderers;
+    std::vector<std::unique_ptr<Renderer>> mRenderers;
 
     void renderTask();
 

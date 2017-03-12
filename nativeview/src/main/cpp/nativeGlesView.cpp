@@ -4,6 +4,7 @@
 
 #include <jni.h>
 #include <common.h>
+#include <memory>
 #include <android/native_window_jni.h>
 
 
@@ -40,10 +41,10 @@ void nativeClassInit(JNIEnv *env, jclass clazz) {
 }
 
 void surfaceCreated(JNIEnv *env, jobject thiz, jobject surface) {
-    std::vector<Renderer *> renders;
+    std::vector<std::unique_ptr<Renderer>> renders;
 
 
-    renders.push_back(new TriangleRenderer());
+    renders.push_back(new std::unique_ptr<Renderer>(new TriangleRenderer()));
 
     EGLWrapper *egl = new EGLWrapper(ANativeWindow_fromSurface(env, surface), renders);
 
@@ -65,8 +66,10 @@ void surfaceChanged(JNIEnv *env, jobject thiz, jint format, jint width,
 }
 
 void surfaceDestroyed(JNIEnv *env, jobject thiz) {
-
-    LOGD("Jni surfaceDestroyed");
+    GlThread *g = getGlThread(env, thiz);
+    if (g) {
+        g->surfaceChanged(format, width, height);
+    }
 
 }
 

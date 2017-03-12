@@ -11,12 +11,20 @@
 
 #include "EGLWrapper.h"
 
+
+#define GLVIEW_ACTION_SURFACE_CHANGE 0;
+#define GLVIEW_ACTION_SURFACE_DESTROY 1;
+#define GLVIEW_ACTION_REDRAW_NEED 2;
+#define GLVIEW_ACTION_PAUSE 3;
+#define GLVIEW_ACTION_RESUME 4;
+
+
 class GlThread : public std::thread {
 
 public:
     GlThread(EGLWrapper *eglWrapper);
 
-    void surfaceChanged(int format, int width, int height);
+    void postEvent();
 
     void onPause();
 
@@ -25,21 +33,19 @@ public:
 private:
     void run();
 
+    void eventHandler();
+
+    std::mutex mEventMutex;
+
     EGLWrapper *mEglWrapper;
 
-    std::mutex mMutex;
+    std::mutex mPauseMutex;
 
-    std::condition_variable mConditionVariable;
+    std::condition_variable mPauseCV;
 
     bool mRun;
+
     bool mRequestPause;
-
-    bool mSufaceChanged;
-
-    int mWidth;
-    int mHeight;
-    int mColorFormat;
-
 };
 
 

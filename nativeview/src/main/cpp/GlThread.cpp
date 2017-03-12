@@ -2,8 +2,8 @@
 // Created by ranqingguo on 3/10/17.
 //
 
-#include "GlThread.h"
 #include <iostream>
+#include "GlThread.h"
 
 #undef  TAG
 #define TAG "GLThread"
@@ -18,8 +18,6 @@ GlThread::GlThread(EGLWrapper *eglWrapper) :
 
 void GlThread::run() {
 
-    mSufaceChanged = false;
-    mRequestPause = false;
 
     if (!mEglWrapper->eglSetUp()) {
         LOGE("EGL Init Failure");
@@ -38,21 +36,17 @@ void GlThread::run() {
         lastTS = now;
 
         if (diffTime < frameInterval) {
-            std::unique_lock<std::mutex> lk(mMutex);
-            mConditionVariable.wait_for(lk, frameInterval - diffTime);
+            std::unique_lock<std::mutex> lk(mPauseMutex);
+            mPauseCV.wait_for(lk, frameInterval - diffTime);
             lk.unlock();
         }
 
 
-        if (mSufaceChanged) {
-            mEglWrapper->resize(mColorFormat, mWidth, mHeight);
-        }
-
         if (mRequestPause) {
             mRequestPause = false;
 
-            std::unique_lock<std::mutex> lk(mMutex);
-            mConditionVariable.wait(lk);
+            std::unique_lock<std::mutex> lk(mPauseMutex);
+            mPauseCV.wait(lk);
             lk.unlock();
             continue;
         }
@@ -61,20 +55,22 @@ void GlThread::run() {
     }
 }
 
-void GlThread::surfaceChanged(int format, int width, int height) {
-    mSufaceChanged = true;
-
-    mColorFormat = format;
-    mWidth = width;
-    mHeight = height;
-}
 
 void GlThread::onPause() {
     mRequestPause = true;
-    mConditionVariable.notify_all();
+    mPauseCV.notify_all();
 }
 
 void GlThread::onResume() {
     mRequestPause = false;
-    mConditionVariable.notify_all();
+    mPauseCV.notify_all();
+}
+
+
+void GlThread::eventHandler() {
+
+}
+
+void GlThread::postEvent() {
+
 }

@@ -3,8 +3,14 @@
 //
 
 #include "TriangleRenderer.h"
+#include <common.h>
+
+#undef TAG
+#define TAG "TriangleRenderer"
 
 bool TriangleRenderer::setUpInternal() {
+    LOGD("setUpInternal()");
+
     char vertexShaderStr[] = "#version 300 es\n"
             "\n"
             "layout(location = 0) in vec3 vPosition;\n"
@@ -67,13 +73,18 @@ bool TriangleRenderer::setUpInternal() {
 }
 
 bool TriangleRenderer::tearDownInternal() {
+    LOGD("tearDownInternal");
+
     glDeleteProgram(mProgram);
+
     glDeleteVertexArrays(1, &mVertexArray);
     glDeleteBuffers(1, &mVertexBuffer);
     return true;
 }
 
 bool TriangleRenderer::renderInternal() {
+    LOGD("renderInternal");
+
     glUseProgram(mProgram);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
