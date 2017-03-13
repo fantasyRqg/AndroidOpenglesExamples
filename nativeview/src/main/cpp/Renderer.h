@@ -35,7 +35,7 @@ public:
 
 private:
     int mZOrder;
-    bool mEnable;
+    bool mEnable = true;
     bool mSetUped;
 
 

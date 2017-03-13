@@ -43,16 +43,18 @@ void nativeClassInit(JNIEnv *env, jclass clazz) {
 void surfaceCreated(JNIEnv *env, jobject thiz, jobject surface) {
     std::vector<std::unique_ptr<Renderer>> renders;
 
+    std::unique_ptr<Renderer> ptr(new TriangleRenderer());
 
-    renders.push_back(new std::unique_ptr<Renderer>(new TriangleRenderer()));
+    renders.push_back(std::move(ptr));
 
-    EGLWrapper *egl = new EGLWrapper(ANativeWindow_fromSurface(env, surface), renders);
+    EGLWrapper *egl = new EGLWrapper(ANativeWindow_fromSurface(env, surface), std::move(renders));
 
     GlThread *glThread = new GlThread(egl);
 
     env->SetLongField(thiz, fields.glThread, (jlong) glThread);
     env->SetLongField(thiz, fields.eglWrapper, (jlong) egl);
 
+    glThread->surfaceCreated();
 }
 
 
@@ -68,15 +70,16 @@ void surfaceChanged(JNIEnv *env, jobject thiz, jint format, jint width,
 void surfaceDestroyed(JNIEnv *env, jobject thiz) {
     GlThread *g = getGlThread(env, thiz);
     if (g) {
-        g->surfaceChanged(format, width, height);
+        g->surfaceDestroyed();
     }
 
 }
 
 void surfaceRedrawNeeded(JNIEnv *env, jobject thiz) {
-
-    LOGD("Jni surfaceRedrawNeeded");
-
+    GlThread *g = getGlThread(env, thiz);
+    if (g) {
+        g->surfaceRedrawNeeded();
+    }
 }
 
 

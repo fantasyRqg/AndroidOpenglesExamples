@@ -24,7 +24,7 @@
 class EGLWrapper {
 public:
 
-    EGLWrapper(EGLNativeWindowType window, std::vector<std::unique_ptr<Renderer>> renders);
+    EGLWrapper(EGLNativeWindowType window, std::vector<std::unique_ptr<Renderer>> &&renders);
 
     ~EGLWrapper();
 

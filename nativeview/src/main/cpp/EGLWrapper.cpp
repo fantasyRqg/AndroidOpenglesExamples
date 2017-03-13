@@ -7,18 +7,16 @@
 
 #include "EGLWrapper.h"
 
-EGLWrapper::EGLWrapper(EGLNativeWindowType window, std::vector<std::unique_ptr<Renderer>> renders) :
+EGLWrapper::EGLWrapper(EGLNativeWindowType window, std::vector<std::unique_ptr<Renderer>> &&renders)
+        :
         mEglDisplay(EGL_NO_DISPLAY), mEglSurface(EGL_NO_SURFACE), mEglContext(EGL_NO_CONTEXT),
-        mWindow(window), mRenderers(renders) {
+        mWindow(window) {
+
+    mRenderers = std::move(renders);
 
 }
 
 EGLWrapper::~EGLWrapper() {
-
-    for (auto &&item : mRenderers) {
-        delete (item);
-    }
-    mRenderers.clear();
 }
 
 bool EGLWrapper::render() {

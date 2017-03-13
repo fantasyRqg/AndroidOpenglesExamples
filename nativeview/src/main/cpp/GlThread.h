@@ -8,15 +8,9 @@
 #include <thread>
 #include <condition_variable>
 #include <mutex>
+#include <queue>
 
 #include "EGLWrapper.h"
-
-
-#define GLVIEW_ACTION_SURFACE_CHANGE 0;
-#define GLVIEW_ACTION_SURFACE_DESTROY 1;
-#define GLVIEW_ACTION_REDRAW_NEED 2;
-#define GLVIEW_ACTION_PAUSE 3;
-#define GLVIEW_ACTION_RESUME 4;
 
 
 class GlThread : public std::thread {
@@ -24,18 +18,22 @@ class GlThread : public std::thread {
 public:
     GlThread(EGLWrapper *eglWrapper);
 
-    void postEvent();
 
     void onPause();
 
     void onResume();
 
+    void surfaceChanged(int format, int width, int height);
+
+    void surfaceDestroyed();
+
+    void surfaceRedrawNeeded();
+
+    void surfaceCreated();
+
 private:
     void run();
 
-    void eventHandler();
-
-    std::mutex mEventMutex;
 
     EGLWrapper *mEglWrapper;
 
@@ -43,9 +41,17 @@ private:
 
     std::condition_variable mPauseCV;
 
+
     bool mRun;
 
     bool mRequestPause;
+    bool mSurfaceChanged;
+    bool mSurfaceDestroyed;
+
+
+    int mFormat;
+    int mWidth;
+    int mHeight;
 };
 
 

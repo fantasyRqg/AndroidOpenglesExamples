@@ -14,6 +14,7 @@ GlThread::GlThread(EGLWrapper *eglWrapper) :
         thread(&GlThread::run, this) {
 
     mEglWrapper = eglWrapper;
+
 }
 
 void GlThread::run() {
@@ -23,12 +24,28 @@ void GlThread::run() {
         LOGE("EGL Init Failure");
     }
 
+    mRun = true;
+    mSurfaceChanged = false;
+    mSurfaceDestroyed = false;
+//    mSurfaceRedrawNeeded = false;
+//    mSurfaceCreated = false;
+
 
     auto frameInterval = std::chrono::microseconds(1000000 / FRAME_RATE);
 
     auto lastTS = std::chrono::steady_clock::now();
 
-    while (mRun) {
+
+    while (!mSurfaceDestroyed && mRun) {
+        //----------------------event handle------------------------------
+
+        if (mSurfaceChanged) {
+            mEglWrapper->resize(mFormat, mWidth, mHeight);
+            mSurfaceChanged = false;
+        }
+
+
+        //----------------------------------------------------
 
         auto now = std::chrono::steady_clock::now();
 
@@ -52,7 +69,10 @@ void GlThread::run() {
         }
 
 
+        mEglWrapper->render();
     }
+
+    mEglWrapper->eglTearDown();
 }
 
 
@@ -66,11 +86,19 @@ void GlThread::onResume() {
     mPauseCV.notify_all();
 }
 
+void GlThread::surfaceChanged(int format, int width, int height) {
 
-void GlThread::eventHandler() {
+}
+
+void GlThread::surfaceDestroyed() {
 
 }
 
-void GlThread::postEvent() {
+void GlThread::surfaceRedrawNeeded() {
 
 }
+
+void GlThread::surfaceCreated() {
+    mSurfaceChanged = false;
+}
+
