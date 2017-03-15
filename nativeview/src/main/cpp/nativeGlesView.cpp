@@ -54,7 +54,6 @@ void surfaceCreated(JNIEnv *env, jobject thiz, jobject surface) {
     env->SetLongField(thiz, fields.glThread, (jlong) glThread);
     env->SetLongField(thiz, fields.eglWrapper, (jlong) egl);
 
-    glThread->surfaceCreated();
 }
 
 

@@ -29,7 +29,6 @@ public:
 
     void surfaceRedrawNeeded();
 
-    void surfaceCreated();
 
 private:
     void run();

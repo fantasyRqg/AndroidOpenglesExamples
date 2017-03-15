@@ -83,7 +83,6 @@ bool TriangleRenderer::tearDownInternal() {
 }
 
 bool TriangleRenderer::renderInternal() {
-    LOGD("renderInternal");
 
     glUseProgram(mProgram);
     glEnableVertexAttribArray(0);

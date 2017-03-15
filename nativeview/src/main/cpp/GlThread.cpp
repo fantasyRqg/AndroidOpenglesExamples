@@ -36,6 +36,8 @@ void GlThread::run() {
     auto lastTS = std::chrono::steady_clock::now();
 
 
+    LOGD("Loop in");
+
     while (!mSurfaceDestroyed && mRun) {
         //----------------------event handle------------------------------
 
@@ -59,7 +61,7 @@ void GlThread::run() {
         }
 
 
-        if (mRequestPause) {
+        if (mRequestPause && !mSurfaceDestroyed) {
             mRequestPause = false;
 
             std::unique_lock<std::mutex> lk(mPauseMutex);
@@ -77,28 +79,39 @@ void GlThread::run() {
 
 
 void GlThread::onPause() {
+    LOGD("onPause");
     mRequestPause = true;
     mPauseCV.notify_all();
 }
 
 void GlThread::onResume() {
+    LOGD("onResume");
     mRequestPause = false;
     mPauseCV.notify_all();
 }
 
 void GlThread::surfaceChanged(int format, int width, int height) {
+    LOGD("surfaceChanged");
+    mFormat = format;
+    mWidth = width;
+    mHeight = height;
 
+    mSurfaceChanged = true;
+
+    mPauseCV.notify_all();
 }
 
 void GlThread::surfaceDestroyed() {
+    LOGD("surfaceDestroyed");
+    mSurfaceDestroyed = true;
 
+    mPauseCV.notify_all();
 }
 
 void GlThread::surfaceRedrawNeeded() {
 
+    mPauseCV.notify_all();
 }
 
-void GlThread::surfaceCreated() {
-    mSurfaceChanged = false;
-}
+
 

@@ -31,7 +31,7 @@ public:
 
     bool eglSetUp();
 
-    void eglTearDown();
+    bool eglTearDown();
 
     bool render();
 

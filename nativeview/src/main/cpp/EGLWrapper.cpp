@@ -83,27 +83,30 @@ bool EGLWrapper::eglSetUp() {
     return true;
 }
 
-void EGLWrapper::eglTearDown() {
+bool EGLWrapper::eglTearDown() {
+    destroyRenders();
+
     eglMakeCurrent(mEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+
 
     if (mEglContext != EGL_NO_CONTEXT) {
         eglDestroyContext(mEglDisplay, mEglContext);
-        mEglContext = EGL_NO_CONTEXT;
-    }
-
-    if (mEglSurface != EGL_NO_SURFACE) {
-        mEglSurface = EGL_NO_SURFACE;
-
-        if (mEglDisplay != EGL_NO_DISPLAY)
-            eglDestroySurface(mEglDisplay, mEglSurface);
     }
 
     if (mEglDisplay != EGL_NO_DISPLAY) {
+
+        if (mEglSurface != EGL_NO_SURFACE) {
+            eglDestroySurface(mEglDisplay, mEglSurface);
+        }
+
         eglTerminate(mEglDisplay);
-        mEglDisplay = EGL_NO_DISPLAY;
     }
 
-    destroyRenders();
+
+    mEglContext = EGL_NO_CONTEXT;
+    mEglSurface = EGL_NO_SURFACE;
+    mEglDisplay = EGL_NO_DISPLAY;
+    return true;
 }
 
 void EGLWrapper::renderTask() {
