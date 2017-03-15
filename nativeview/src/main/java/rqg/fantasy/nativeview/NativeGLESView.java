@@ -1,6 +1,7 @@
 package rqg.fantasy.nativeview;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -20,6 +21,10 @@ public class NativeGLESView extends SurfaceView implements SurfaceHolder.Callbac
     private long mGlThreadPointer;
     private long mEglWrapperPointer;
 
+
+    //in case of garbage collection cause native AssetManager crash
+    private AssetManager mAMgr;
+
     public NativeGLESView(Context context) {
         super(context);
         init();
@@ -38,6 +43,8 @@ public class NativeGLESView extends SurfaceView implements SurfaceHolder.Callbac
 
     private void init() {
         getHolder().addCallback(this);
+
+        mAMgr = getContext().getAssets();
     }
 
     public void onResume() {
@@ -56,7 +63,8 @@ public class NativeGLESView extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        nativeSurfaceCreated(holder.getSurface());
+        nativeSurfaceCreated(holder.getSurface(), mAMgr);
+
     }
 
     @Override
@@ -74,19 +82,26 @@ public class NativeGLESView extends SurfaceView implements SurfaceHolder.Callbac
         nativeSurfaceRedrawNeeded();
     }
 
-
+    @SuppressWarnings("all")
     private native void nativeOnResume();
 
+    @SuppressWarnings("all")
     private native void nativeOnPause();
 
-    private native void nativeSurfaceCreated(Surface surface);
+    @SuppressWarnings("all")
+    private native void nativeSurfaceCreated(Surface surface, AssetManager assetManager);
 
+    @SuppressWarnings("all")
     private native void nativeSurfaceChanged(int format, int width, int height);
 
+    @SuppressWarnings("all")
     private native void nativeSurfaceDestroyed();
 
+    @SuppressWarnings("all")
     private native void nativeSurfaceRedrawNeeded();
 
+
+    @SuppressWarnings("all")
     private static native void nativeClassInit();
 
     static {

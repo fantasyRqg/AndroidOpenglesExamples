@@ -7,11 +7,14 @@
 
 #include "EGLWrapper.h"
 
-EGLWrapper::EGLWrapper(EGLNativeWindowType window, std::vector<std::unique_ptr<Renderer>> &&renders)
-        :
-        mEglDisplay(EGL_NO_DISPLAY), mEglSurface(EGL_NO_SURFACE), mEglContext(EGL_NO_CONTEXT),
-        mWindow(window) {
+EGLWrapper::EGLWrapper(EGLNativeWindowType window,
+                       std::vector<std::unique_ptr<Renderer>> &&renders,
+                       AAssetManager *pManager)
+        : mEglDisplay(EGL_NO_DISPLAY), mEglSurface(EGL_NO_SURFACE), mEglContext(EGL_NO_CONTEXT) {
 
+
+    mWindow = window;
+    mAssetManager = pManager;
     mRenderers = std::move(renders);
 
 }
@@ -106,6 +109,8 @@ bool EGLWrapper::eglTearDown() {
     mEglContext = EGL_NO_CONTEXT;
     mEglSurface = EGL_NO_SURFACE;
     mEglDisplay = EGL_NO_DISPLAY;
+
+    ANativeWindow_release(mWindow);
     return true;
 }
 
@@ -123,7 +128,7 @@ void EGLWrapper::destroyRenders() {
 
 void EGLWrapper::prepareRenders() {
     for (auto &&item : mRenderers) {
-        item->setUp();
+        item->setUp(mAssetManager);
     }
 
 }

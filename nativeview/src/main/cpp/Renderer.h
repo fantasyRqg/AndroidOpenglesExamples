@@ -8,6 +8,11 @@
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 #include <glm/glm.hpp>
+#include <android/asset_manager.h>
+#include <common.h>
+
+#undef TAG
+#define TAG "Renderer"
 
 class Renderer {
 public:
@@ -23,7 +28,7 @@ public:
 
     void setEnable(bool enable);
 
-    bool setUp();
+    bool setUp(AAssetManager *mgr);
 
     bool tearDown();
 
@@ -33,6 +38,8 @@ public:
 
     bool operator<(const Renderer &renderer) const;
 
+    GLuint loadShader(AAssetManager *amgr, const char *fname, GLenum type);
+
 private:
     int mZOrder;
     bool mEnable = true;
@@ -41,7 +48,8 @@ private:
 
 protected:
 
-    virtual bool setUpInternal() = 0;
+
+    virtual bool setUpInternal(AAssetManager *mgr) = 0;
 
     virtual bool tearDownInternal() = 0;
 

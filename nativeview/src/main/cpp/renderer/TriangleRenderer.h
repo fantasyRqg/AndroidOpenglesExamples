@@ -10,14 +10,15 @@
 
 class TriangleRenderer : public Renderer {
 protected:
-    virtual bool setUpInternal() override ;
+    virtual bool setUpInternal(AAssetManager *mgr) override;
 
-    virtual bool tearDownInternal() override ;
+    virtual bool tearDownInternal() override;
 
-    virtual bool renderInternal() override ;
+    virtual bool renderInternal() override;
 
 public:
     virtual ~TriangleRenderer() override;
+
 
 private:
     GLuint mProgram;

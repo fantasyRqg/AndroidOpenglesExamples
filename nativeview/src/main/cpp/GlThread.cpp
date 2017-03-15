@@ -54,7 +54,7 @@ void GlThread::run() {
         auto diffTime = now - lastTS;
         lastTS = now;
 
-        if (diffTime < frameInterval) {
+        if (diffTime < frameInterval && !mRequestPause && !mSurfaceDestroyed) {
             std::unique_lock<std::mutex> lk(mPauseMutex);
             mPauseCV.wait_for(lk, frameInterval - diffTime);
             lk.unlock();

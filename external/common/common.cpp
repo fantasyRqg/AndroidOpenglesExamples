@@ -59,10 +59,28 @@ namespace glCommon {
     }
 
 
+    const char *getGlErrorStr(GLint e) {
+        switch (e) {
+            case GL_INVALID_ENUM:
+                return "GL_INVALID_ENUM";
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
+                return "GL_INVALID_FRAMEBUFFER_OPERATION";
+//            case GL_INVALID_INDEX:
+//                return "GL_INVALID_INDEX";
+            case GL_INVALID_OPERATION:
+                return "GL_INVALID_OPERATION";
+            case GL_INVALID_VALUE:
+                return "GL_INVALID_VALUE";
+
+            default:
+                return "UNKNOWN_ERROR";
+        }
+    }
+
     bool checkGlError(const char *funcName) {
         GLint err = glGetError();
         if (err != GL_NO_ERROR) {
-            LOGE("GL error after %s(): 0x%08x\n", funcName, err);
+            LOGE("GL error after %s(): %s\n", funcName, getGlErrorStr(err));
             return true;
         }
         return false;

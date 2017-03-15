@@ -6,6 +6,7 @@
 #include <common.h>
 #include <memory>
 #include <android/native_window_jni.h>
+#include <android/asset_manager_jni.h>
 
 
 #include "GlThread.h"
@@ -40,16 +41,24 @@ void nativeClassInit(JNIEnv *env, jclass clazz) {
     fields.eglWrapper = env->GetFieldID(clazz, EGL_WRAPPER_JNI_ID, "J");
 }
 
-void surfaceCreated(JNIEnv *env, jobject thiz, jobject surface) {
+void surfaceCreated(JNIEnv *env, jobject thiz, jobject surface, jobject assetManager) {
     std::vector<std::unique_ptr<Renderer>> renders;
 
     std::unique_ptr<Renderer> ptr(new TriangleRenderer());
 
     renders.push_back(std::move(ptr));
 
-    EGLWrapper *egl = new EGLWrapper(ANativeWindow_fromSurface(env, surface), std::move(renders));
+
+    //java level hold assetManager ref
+    AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
+
+    EGLWrapper *egl = new EGLWrapper(
+            ANativeWindow_fromSurface(env, surface),
+            std::move(renders),
+            mgr);
 
     GlThread *glThread = new GlThread(egl);
+
 
     env->SetLongField(thiz, fields.glThread, (jlong) glThread);
     env->SetLongField(thiz, fields.eglWrapper, (jlong) egl);
@@ -70,6 +79,16 @@ void surfaceDestroyed(JNIEnv *env, jobject thiz) {
     GlThread *g = getGlThread(env, thiz);
     if (g) {
         g->surfaceDestroyed();
+
+        g->join();
+
+        delete (g);
+    }
+
+    EGLWrapper *egl = getEglWrapper(env, thiz);
+
+    if (egl) {
+        delete (egl);
     }
 
 }
@@ -100,13 +119,13 @@ void onPause(JNIEnv *env, jobject thiz) {
 
 //------------------------------------------------------------------------------------------------------------
 static JNINativeMethod gGLES3JniViewMethods[] = {
-        {"nativeSurfaceCreated",      "(Landroid/view/Surface;)V", (void *) surfaceCreated},
-        {"nativeSurfaceChanged",      "(III)V",                    (void *) surfaceChanged},
-        {"nativeSurfaceDestroyed",    "()V",                       (void *) surfaceDestroyed},
-        {"nativeSurfaceRedrawNeeded", "()V",                       (void *) surfaceRedrawNeeded},
-        {"nativeClassInit",           "()V",                       (void *) nativeClassInit},
-        {"nativeOnResume",            "()V",                       (void *) onResume},
-        {"nativeOnPause",             "()V",                       (void *) onPause},
+        {"nativeSurfaceCreated",      "(Landroid/view/Surface;Landroid/content/res/AssetManager;)V", (void *) surfaceCreated},
+        {"nativeSurfaceChanged",      "(III)V",                                                      (void *) surfaceChanged},
+        {"nativeSurfaceDestroyed",    "()V",                                                         (void *) surfaceDestroyed},
+        {"nativeSurfaceRedrawNeeded", "()V",                                                         (void *) surfaceRedrawNeeded},
+        {"nativeClassInit",           "()V",                                                         (void *) nativeClassInit},
+        {"nativeOnResume",            "()V",                                                         (void *) onResume},
+        {"nativeOnPause",             "()V",                                                         (void *) onPause},
 };
 
 static const char *classPathName = "rqg/fantasy/nativeview/NativeGLESView";

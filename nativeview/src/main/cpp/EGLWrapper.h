@@ -12,19 +12,24 @@
 #include <GLES3/gl3.h>
 #include <common.h>
 #include <memory>
+#include <android/native_window.h>
+#include <android/asset_manager.h>
 
 
 #include "EglCommonDefine.h"
 #include "Renderer.h"
 
 
+#undef TAG
 #define TAG "EGLWrapper"
 
 
 class EGLWrapper {
 public:
 
-    EGLWrapper(EGLNativeWindowType window, std::vector<std::unique_ptr<Renderer>> &&renders);
+    EGLWrapper(EGLNativeWindowType window, std::vector<std::unique_ptr<Renderer>> &&renders,
+               AAssetManager *pManager);
+
 
     ~EGLWrapper();
 
@@ -50,6 +55,7 @@ protected:
     EGLContext mEglContext;
     EGLConfig mGlConfig;
     EGLNativeWindowType mWindow;
+    AAssetManager *mAssetManager;
 
     int mWindowWidth;
     int mWindowHeight;
