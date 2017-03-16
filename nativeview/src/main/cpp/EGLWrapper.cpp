@@ -22,10 +22,10 @@ EGLWrapper::EGLWrapper(EGLNativeWindowType window,
 EGLWrapper::~EGLWrapper() {
 }
 
-bool EGLWrapper::render() {
+bool EGLWrapper::render(long timestampNs) {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-    renderTask();
+    renderTask(timestampNs);
 
     GLuint err = glGetError();
     if (err != GL_NO_ERROR) {
@@ -121,9 +121,9 @@ bool EGLWrapper::eglTearDown() {
     return true;
 }
 
-void EGLWrapper::renderTask() {
+void EGLWrapper::renderTask(long timestampNs) {
     for (auto &&item : mRenderers) {
-        item->render();
+        item->render(timestampNs);
     }
 }
 
@@ -135,7 +135,9 @@ void EGLWrapper::destroyRenders() {
 
 void EGLWrapper::prepareRenders() {
     for (auto &&item : mRenderers) {
-        item->setUp(mAssetManager);
+
+        item->setEglWrapper(this);
+        item->setUp();
     }
 
 }
@@ -145,5 +147,17 @@ void EGLWrapper::resize(int format, int width, int height) {
     mWindowHeight = height;
     glViewport(0, 0, width, height);
 
+}
+
+int EGLWrapper::getWindowWidth() const {
+    return mWindowWidth;
+}
+
+AAssetManager *EGLWrapper::getAssetManager() const {
+    return mAssetManager;
+}
+
+int EGLWrapper::getWindowHeight() const {
+    return mWindowHeight;
 }
 

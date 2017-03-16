@@ -38,7 +38,7 @@ public:
 
     bool eglTearDown();
 
-    bool render();
+    bool render(long timestampNs);
 
 
     void resize(int format, int width, int height);
@@ -46,6 +46,12 @@ public:
     void prepareRenders();
 
     void destroyRenders();
+
+    int getWindowWidth() const;
+
+    int getWindowHeight() const;
+
+    AAssetManager *getAssetManager() const;
 
 
 protected:
@@ -62,7 +68,7 @@ protected:
 
     std::vector<std::unique_ptr<Renderer>> mRenderers;
 
-    void renderTask();
+    void renderTask(long timestampNs);
 
 };
 

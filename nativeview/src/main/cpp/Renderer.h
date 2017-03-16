@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 #include <android/asset_manager.h>
 #include <common.h>
+#include "EGLWrapper.h"
 
 #undef TAG
 #define TAG "Renderer"
@@ -28,17 +29,19 @@ public:
 
     void setEnable(bool enable);
 
-    bool setUp(AAssetManager *mgr);
+    bool setUp();
 
     bool tearDown();
 
-    bool render();
+    bool render(long timestampNs);
 
     bool operator=(const Renderer &renderer) const;
 
     bool operator<(const Renderer &renderer) const;
 
     GLuint loadShader(AAssetManager *amgr, const char *fname, GLenum type);
+
+    void setEglWrapper(EGLWrapper *wrapper);
 
 private:
     int mZOrder;
@@ -47,9 +50,10 @@ private:
 
 
 protected:
+    EGLWrapper *mEglWrapper;
 
 
-    virtual bool setUpInternal(AAssetManager *mgr) = 0;
+    virtual bool setUpInternal() = 0;
 
     virtual bool tearDownInternal() = 0;
 

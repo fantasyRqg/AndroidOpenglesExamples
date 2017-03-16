@@ -71,7 +71,7 @@ void GlThread::run() {
         }
 
 
-        mEglWrapper->render();
+        mEglWrapper->render(now.time_since_epoch().count());
     }
 
     mEglWrapper->eglTearDown();

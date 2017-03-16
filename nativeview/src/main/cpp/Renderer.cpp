@@ -23,9 +23,9 @@ void Renderer::setEnable(bool enable) {
     mEnable = enable;
 }
 
-bool Renderer::setUp(AAssetManager *mgr) {
+bool Renderer::setUp() {
     if (!mSetUped)
-        mSetUped = setUpInternal(mgr);
+        mSetUped = setUpInternal();
 
     return mSetUped;
 }
@@ -36,7 +36,7 @@ bool Renderer::tearDown() {
 
 }
 
-bool Renderer::render() {
+bool Renderer::render(long timestampNs) {
     if (mEnable) {
         return renderInternal();
     } else {
@@ -94,6 +94,11 @@ GLuint Renderer::loadShader(AAssetManager *amgr, const char *fname, GLenum type)
         LOGE("shader name %s", fname);
         return 0;
     }
+}
+
+void Renderer::setEglWrapper(EGLWrapper *wrapper) {
+    mEglWrapper = wrapper;
+
 }
 
 

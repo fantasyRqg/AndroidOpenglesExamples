@@ -31,6 +31,7 @@ add_library(nativeGlesView SHARED
         Renderer.cpp
         EGLWrapper.cpp
         renderer/TriangleRenderer.cpp
+        renderer/InstanceRenderer.cpp
         )
 
 target_include_directories(nativeGlesView PRIVATE

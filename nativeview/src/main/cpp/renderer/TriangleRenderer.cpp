@@ -7,8 +7,9 @@
 #undef TAG
 #define TAG "TriangleRenderer"
 
-bool TriangleRenderer::setUpInternal(AAssetManager *mgr) {
+bool TriangleRenderer::setUpInternal() {
 
+    AAssetManager *mgr = mEglWrapper->getAssetManager();
 
     glGenVertexArrays(1, &mVertexArray);
     glBindVertexArray(mVertexArray);

@@ -10,7 +10,7 @@
 
 class TriangleRenderer : public Renderer {
 protected:
-    virtual bool setUpInternal(AAssetManager *mgr) override;
+    virtual bool setUpInternal() override;
 
     virtual bool tearDownInternal() override;
 
