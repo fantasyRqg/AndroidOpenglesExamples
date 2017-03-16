@@ -14,10 +14,10 @@ protected:
 
     virtual bool tearDownInternal() override;
 
-    virtual bool renderInternal() override;
+    virtual bool renderInternal(long timestampeNs) override;
 
 private:
-    GLuint  mPorgram;
+    GLuint mPorgram;
     GLuint mVAO;
 
 

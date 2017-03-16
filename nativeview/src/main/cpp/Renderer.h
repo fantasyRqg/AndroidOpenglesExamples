@@ -10,10 +10,13 @@
 #include <glm/glm.hpp>
 #include <android/asset_manager.h>
 #include <common.h>
+
 #include "EGLWrapper.h"
 
 #undef TAG
 #define TAG "Renderer"
+
+class EGLWrapper;
 
 class Renderer {
 public:
@@ -57,7 +60,7 @@ protected:
 
     virtual bool tearDownInternal() = 0;
 
-    virtual bool renderInternal() = 0;
+    virtual bool renderInternal(long timestampeNs) = 0;
 
 };
 

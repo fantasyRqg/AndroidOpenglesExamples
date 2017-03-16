@@ -6,6 +6,7 @@
 
 #include "EGLWrapper.h"
 #include <EGL/eglext.h>
+#include "Renderer.h"
 
 EGLWrapper::EGLWrapper(EGLNativeWindowType window,
                        std::vector<std::unique_ptr<Renderer>> &&renders,

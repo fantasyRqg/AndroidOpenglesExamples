@@ -17,16 +17,16 @@
 
 
 #include "EglCommonDefine.h"
-#include "Renderer.h"
+//#include "Renderer.h"
 
 
 #undef TAG
 #define TAG "EGLWrapper"
 
+class Renderer;
 
 class EGLWrapper {
 public:
-
     EGLWrapper(EGLNativeWindowType window, std::vector<std::unique_ptr<Renderer>> &&renders,
                AAssetManager *pManager);
 

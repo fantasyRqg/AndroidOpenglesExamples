@@ -7,6 +7,7 @@
 #undef TAG
 #define TAG "TriangleRenderer"
 
+
 bool TriangleRenderer::setUpInternal() {
 
     AAssetManager *mgr = mEglWrapper->getAssetManager();
@@ -60,7 +61,24 @@ bool TriangleRenderer::tearDownInternal() {
     return true;
 }
 
-bool TriangleRenderer::renderInternal() {
+long lastTime = 0;
+int nbFrames = 0;
+
+bool TriangleRenderer::renderInternal(long timestampNs) {
+
+    if (lastTime == 0) {
+        lastTime = timestampNs;
+    }
+
+    nbFrames++;
+    if (timestampNs - lastTime >= 1000) { // If last prinf() was more than 1 sec ago
+        // printf and reset timer
+        LOGI("%f ms/frame\n", 1000.0 / double(nbFrames));
+        LOGV("%d frame/sec\n", nbFrames);
+        nbFrames = 0;
+        lastTime += 1000;
+    }
+
     glUseProgram(mProgram);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);

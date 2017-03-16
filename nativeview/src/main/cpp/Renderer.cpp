@@ -38,7 +38,7 @@ bool Renderer::tearDown() {
 
 bool Renderer::render(long timestampNs) {
     if (mEnable) {
-        return renderInternal();
+        return renderInternal(timestampNs);
     } else {
         return false;
     }

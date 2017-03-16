@@ -12,6 +12,6 @@ bool InstanceRenderer::tearDownInternal() {
     return false;
 }
 
-bool InstanceRenderer::renderInternal() {
+bool InstanceRenderer::renderInternal(long timestampeNs) {
     return false;
 }

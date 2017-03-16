@@ -33,8 +33,7 @@ void GlThread::run() {
 
     auto frameInterval = std::chrono::microseconds(1000000 / FRAME_RATE);
 
-    auto lastTS = std::chrono::steady_clock::now();
-
+    auto startTime = std::chrono::steady_clock::now() + frameInterval;
 
     LOGD("Loop in");
 
@@ -49,16 +48,21 @@ void GlThread::run() {
 
         //----------------------------------------------------
 
-        auto now = std::chrono::steady_clock::now();
-
-        auto diffTime = now - lastTS;
-        lastTS = now;
+        auto endTime = std::chrono::steady_clock::now();
+        auto diffTime = endTime - startTime;
 
         if (diffTime < frameInterval && !mRequestPause && !mSurfaceDestroyed) {
             std::unique_lock<std::mutex> lk(mPauseMutex);
-            mPauseCV.wait_for(lk, frameInterval - diffTime);
+
+            auto wt = frameInterval - diffTime;
+
+
+            mPauseCV.wait_for(lk, wt);
             lk.unlock();
         }
+
+
+        startTime = std::chrono::steady_clock::now();
 
 
         if (mRequestPause && !mSurfaceDestroyed) {
@@ -71,7 +75,12 @@ void GlThread::run() {
         }
 
 
-        mEglWrapper->render(now.time_since_epoch().count());
+        using namespace std::chrono;
+        auto tm = time_point_cast<milliseconds>(steady_clock::now()).time_since_epoch().count();
+
+        mEglWrapper->render(tm);
+
+
     }
 
     mEglWrapper->eglTearDown();
