@@ -2,7 +2,7 @@
 
 layout(location =0) in vec3 vPosition;
 
-out vec3 inColor;
+smooth out vec3 inColor;
 
 void main() {
     gl_Position = vec4(vPosition,1.0);

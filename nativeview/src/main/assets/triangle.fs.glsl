@@ -1,7 +1,7 @@
 #version 300 es
 precision mediump float;
 
-in vec3 inColor;
+smooth in vec3 inColor;
 out vec4 fragColor;
 
 void main() {

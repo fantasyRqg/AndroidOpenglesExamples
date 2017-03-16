@@ -4,8 +4,8 @@
 
 #include <algorithm>
 
-
 #include "EGLWrapper.h"
+#include <EGL/eglext.h>
 
 EGLWrapper::EGLWrapper(EGLNativeWindowType window,
                        std::vector<std::unique_ptr<Renderer>> &&renders,
@@ -42,12 +42,19 @@ bool EGLWrapper::render() {
 bool EGLWrapper::eglSetUp() {
 
     static const EGLint DEFAULT_CONTEXT_ATTRIBS[] = {
-            EGL_CONTEXT_CLIENT_VERSION, 2,
+            EGL_CONTEXT_CLIENT_VERSION, 3,
             EGL_NONE};
 
     static const EGLint DEFAULT_CONFIG_ATTRIBS[] = {
             EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+
+
+#ifdef EGL_KHR_create_context
+            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT_KHR,
+#else
             EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+#endif
+
             EGL_RED_SIZE, 8,
             EGL_GREEN_SIZE, 8,
             EGL_BLUE_SIZE, 8,
