@@ -10,7 +10,7 @@
 
 
 #include "GlThread.h"
-#include "renderer/TriangleRenderer.h"
+#include "renderer/InstanceRenderer.h"
 
 
 #undef TAG
@@ -44,7 +44,7 @@ void nativeClassInit(JNIEnv *env, jclass clazz) {
 void surfaceCreated(JNIEnv *env, jobject thiz, jobject surface, jobject assetManager) {
     std::vector<std::unique_ptr<Renderer>> renders;
 
-    std::unique_ptr<Renderer> ptr(new TriangleRenderer());
+    std::unique_ptr<Renderer> ptr(new InstanceRenderer());
 
     renders.push_back(std::move(ptr));
 

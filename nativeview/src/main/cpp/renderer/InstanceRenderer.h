@@ -7,6 +7,10 @@
 
 #include "../Renderer.h"
 
+#define NUM_INSTANCES   100
+
+#undef TAG
+#define TAG "InstanceRenderer"
 
 class InstanceRenderer : public Renderer {
 protected:
@@ -14,13 +18,28 @@ protected:
 
     virtual bool tearDownInternal() override;
 
-    virtual bool renderInternal(long timestampeNs) override;
+    virtual bool renderInternal(long timestampNs) override;
+
+    int esGenCube(float scale, GLfloat **vertices, GLfloat **normals,
+                  GLfloat **texCoords, GLuint **indices);
 
 private:
-    GLuint mPorgram;
+
+    void update(long timestampNs);
+
+    GLuint mProgram;
     GLuint mVAO;
+    GLuint mMvpVBO;
+    GLuint mIndicateVBO;
 
 
+    GLuint mPositionVBO;
+
+
+    GLuint mColorVBO;
+    GLfloat mAngle[NUM_INSTANCES];
+
+    int mNumIndicateds;
 };
 
 
