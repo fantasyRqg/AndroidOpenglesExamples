@@ -61,17 +61,18 @@ bool TriangleRenderer::tearDownInternal() {
     return true;
 }
 
-long lastTime = 0;
-int nbFrames = 0;
 
-bool TriangleRenderer::renderInternal(long timestampNs) {
+bool TriangleRenderer::renderInternal(long timestampMills) {
+
+    static long lastTime = 0;
+    static int nbFrames = 0;
 
     if (lastTime == 0) {
-        lastTime = timestampNs;
+        lastTime = timestampMills;
     }
 
     nbFrames++;
-    if (timestampNs - lastTime >= 1000) { // If last prinf() was more than 1 sec ago
+    if (timestampMills - lastTime >= 1000) { // If last prinf() was more than 1 sec ago
         // printf and reset timer
         LOGI("%f ms/frame\n", 1000.0 / double(nbFrames));
         LOGV("%d frame/sec\n", nbFrames);

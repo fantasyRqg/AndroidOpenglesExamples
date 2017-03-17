@@ -9,24 +9,24 @@
 #include "Renderer.h"
 
 EGLWrapper::EGLWrapper(EGLNativeWindowType window,
-                       std::vector<std::unique_ptr<Renderer>> &&renders,
+                       std::unique_ptr<Renderer> &&renders,
                        AAssetManager *pManager)
         : mEglDisplay(EGL_NO_DISPLAY), mEglSurface(EGL_NO_SURFACE), mEglContext(EGL_NO_CONTEXT) {
 
 
     mWindow = window;
     mAssetManager = pManager;
-    mRenderers = std::move(renders);
+    mRenderer = std::move(renders);
 
 }
 
 EGLWrapper::~EGLWrapper() {
 }
 
-bool EGLWrapper::render(long timestampNs) {
+bool EGLWrapper::render(long timestampMills) {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-    renderTask(timestampNs);
+    renderTask(timestampMills);
 
     GLuint err = glGetError();
     if (err != GL_NO_ERROR) {
@@ -87,6 +87,11 @@ bool EGLWrapper::eglSetUp() {
     EGL_RESULT_CHECK(eglQuerySurface(mEglDisplay, mEglSurface, EGL_HEIGHT, &mWindowHeight));
 
 
+    LOGI("%s", glGetString(GL_VERSION));
+    LOGI("%s", glGetString(GL_VENDOR));
+    LOGI("%s", glGetString(GL_RENDERER));
+    LOGI("%s", glGetString(GL_EXTENSIONS));
+
     glViewport(0, 0, mWindowWidth, mWindowHeight);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -122,24 +127,18 @@ bool EGLWrapper::eglTearDown() {
     return true;
 }
 
-void EGLWrapper::renderTask(long timestampNs) {
-    for (auto &&item : mRenderers) {
-        item->render(timestampNs);
-    }
+void EGLWrapper::renderTask(long timestampMills) {
+    mRenderer->render(timestampMills);
 }
 
 void EGLWrapper::destroyRenders() {
-    for (auto &&item : mRenderers) {
-        item->tearDown();
-    }
+    mRenderer->tearDown();
 }
 
 void EGLWrapper::prepareRenders() {
-    for (auto &&item : mRenderers) {
 
-        item->setEglWrapper(this);
-        item->setUp();
-    }
+    mRenderer->setEglWrapper(this);
+    mRenderer->setUp();
 
 }
 

@@ -36,7 +36,7 @@ public:
 
     bool tearDown();
 
-    bool render(long timestampNs);
+    bool render(long timestampMills);
 
     bool operator=(const Renderer &renderer) const;
 
@@ -60,7 +60,7 @@ protected:
 
     virtual bool tearDownInternal() = 0;
 
-    virtual bool renderInternal(long timestampeNs) = 0;
+    virtual bool renderInternal(long timestampMills) = 0;
 
 };
 

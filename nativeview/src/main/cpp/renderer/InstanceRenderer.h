@@ -5,7 +5,15 @@
 #ifndef ANDROIDOPENGLEXAMPLES_INSTANCERENDERER_H
 #define ANDROIDOPENGLEXAMPLES_INSTANCERENDERER_H
 
+#define GLM_ENABLE_EXPERIMENTAL
+
+
 #include "../Renderer.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/ext.hpp>
+
 
 #define NUM_INSTANCES   100
 
@@ -18,7 +26,7 @@ protected:
 
     virtual bool tearDownInternal() override;
 
-    virtual bool renderInternal(long timestampNs) override;
+    virtual bool renderInternal(long timestampMills) override;
 
     int esGenCube(float scale, GLfloat **vertices, GLfloat **normals,
                   GLfloat **texCoords, GLuint **indices);
@@ -40,6 +48,12 @@ private:
     GLfloat mAngle[NUM_INSTANCES];
 
     int mNumIndicateds;
+
+    GLint mPVmatLocation;
+
+    glm::mat4 mProjectMatrix;
+    glm::mat4 mViewMatrix;
+
 };
 
 

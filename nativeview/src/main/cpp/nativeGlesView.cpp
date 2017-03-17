@@ -11,6 +11,7 @@
 
 #include "GlThread.h"
 #include "renderer/InstanceRenderer.h"
+#include "renderer/TriangleRenderer.h"
 
 
 #undef TAG
@@ -42,19 +43,14 @@ void nativeClassInit(JNIEnv *env, jclass clazz) {
 }
 
 void surfaceCreated(JNIEnv *env, jobject thiz, jobject surface, jobject assetManager) {
-    std::vector<std::unique_ptr<Renderer>> renders;
-
     std::unique_ptr<Renderer> ptr(new InstanceRenderer());
-
-    renders.push_back(std::move(ptr));
-
 
     //java level hold assetManager ref
     AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
 
     EGLWrapper *egl = new EGLWrapper(
             ANativeWindow_fromSurface(env, surface),
-            std::move(renders),
+            std::move(ptr),
             mgr);
 
     GlThread *glThread = new GlThread(egl);

@@ -14,7 +14,7 @@ protected:
 
     virtual bool tearDownInternal() override;
 
-    virtual bool renderInternal(long timestampNs) override;
+    virtual bool renderInternal(long timestampMills) override;
 
 public:
     virtual ~TriangleRenderer() override;

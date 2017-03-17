@@ -8,7 +8,7 @@
 #undef  TAG
 #define TAG "GLThread"
 
-#define FRAME_RATE 30
+#define FRAME_RATE 60
 
 GlThread::GlThread(EGLWrapper *eglWrapper) :
         thread(&GlThread::run, this) {
@@ -18,8 +18,6 @@ GlThread::GlThread(EGLWrapper *eglWrapper) :
 }
 
 void GlThread::run() {
-
-
     if (!mEglWrapper->eglSetUp()) {
         LOGE("EGL Init Failure");
     }
@@ -39,7 +37,6 @@ void GlThread::run() {
 
     while (!mSurfaceDestroyed && mRun) {
         //----------------------event handle------------------------------
-
         if (mSurfaceChanged) {
             mEglWrapper->resize(mFormat, mWidth, mHeight);
             mSurfaceChanged = false;

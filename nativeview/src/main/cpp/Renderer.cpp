@@ -36,9 +36,9 @@ bool Renderer::tearDown() {
 
 }
 
-bool Renderer::render(long timestampNs) {
+bool Renderer::render(long timestampMills) {
     if (mEnable) {
-        return renderInternal(timestampNs);
+        return renderInternal(timestampMills);
     } else {
         return false;
     }

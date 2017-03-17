@@ -2,17 +2,102 @@
 // Created by ranqingguo on 3/16/17.
 //
 
-#define GLM_ENABLE_EXPERIMENTAL
 
 #include "InstanceRenderer.h"
-#include <glm/glm.hpp>
 #include <algorithm>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/string_cast.hpp>
-#include <glm/ext.hpp>
 
 
 bool InstanceRenderer::setUpInternal() {
+
+
+    static const GLfloat g_vertex_buffer_data[] = {
+            -1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+            -1.0f, 1.0f, -1.0f,
+            1.0f, -1.0f, 1.0f,
+            -1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, 1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+            -1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, -1.0f,
+            1.0f, -1.0f, 1.0f,
+            -1.0f, -1.0f, 1.0f,
+            -1.0f, -1.0f, -1.0f,
+            -1.0f, 1.0f, 1.0f,
+            -1.0f, -1.0f, 1.0f,
+            1.0f, -1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, 1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, 1.0f, 1.0f,
+            1.0f, -1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, -1.0f,
+            -1.0f, 1.0f, -1.0f,
+            1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, -1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f, -1.0f, 1.0f
+    };
+
+    // One color for each vertex. They were generated randomly.
+    static const GLfloat g_color_buffer_data[] = {
+            0.583f, 0.771f, 0.014f,
+            0.609f, 0.115f, 0.436f,
+            0.327f, 0.483f, 0.844f,
+            0.822f, 0.569f, 0.201f,
+            0.435f, 0.602f, 0.223f,
+            0.310f, 0.747f, 0.185f,
+            0.597f, 0.770f, 0.761f,
+            0.559f, 0.436f, 0.730f,
+            0.359f, 0.583f, 0.152f,
+            0.483f, 0.596f, 0.789f,
+            0.559f, 0.861f, 0.639f,
+            0.195f, 0.548f, 0.859f,
+            0.014f, 0.184f, 0.576f,
+            0.771f, 0.328f, 0.970f,
+            0.406f, 0.615f, 0.116f,
+            0.676f, 0.977f, 0.133f,
+            0.971f, 0.572f, 0.833f,
+            0.140f, 0.616f, 0.489f,
+            0.997f, 0.513f, 0.064f,
+            0.945f, 0.719f, 0.592f,
+            0.543f, 0.021f, 0.978f,
+            0.279f, 0.317f, 0.505f,
+            0.167f, 0.620f, 0.077f,
+            0.347f, 0.857f, 0.137f,
+            0.055f, 0.953f, 0.042f,
+            0.714f, 0.505f, 0.345f,
+            0.783f, 0.290f, 0.734f,
+            0.722f, 0.645f, 0.174f,
+            0.302f, 0.455f, 0.848f,
+            0.225f, 0.587f, 0.040f,
+            0.517f, 0.713f, 0.338f,
+            0.053f, 0.959f, 0.120f,
+            0.393f, 0.621f, 0.362f,
+            0.673f, 0.211f, 0.457f,
+            0.820f, 0.883f, 0.371f,
+            0.982f, 0.099f, 0.879f
+    };
+
+    float aspect = float(mEglWrapper->getWindowWidth()) / float(mEglWrapper->getWindowHeight());
+
+
+    mProjectMatrix = glm::perspective(45.0f, aspect, 1.0f, 100.0f);
+    mViewMatrix = glm::lookAt(
+            glm::vec3(0, 0, 7), // Camera is here
+            glm::vec3(0, 0, 0), // and looks here
+            glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+    );
 
     glGenVertexArrays(1, &mVAO);
     glBindVertexArray(mVAO);
@@ -32,64 +117,82 @@ bool InstanceRenderer::setUpInternal() {
     glDeleteShader(vs);
 
 
-    GLfloat *positions;
-    GLuint *indices;
-
-    int numIndices = esGenCube(0.1f, &positions, NULL, NULL, &indices);
-
-    mNumIndicateds = numIndices;
-
-    //indicates
-    glGenBuffers(1, &mIndicateVBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndicateVBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numIndices, indices, GL_STATIC_DRAW);
-    free(indices);
-
+//    GLfloat *positions;
+//    GLuint *indices;
+//
+//    int numIndices = esGenCube(0.1f, &positions, NULL, NULL, &indices);
+//
+//    mNumIndicateds = numIndices;
+//
+//    //indicates
+//    glGenBuffers(1, &mIndicateVBO);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndicateVBO);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numIndices, indices, GL_STATIC_DRAW);
+//    free(indices);
+//
     glGenBuffers(1, &mPositionVBO);
     glBindBuffer(GL_ARRAY_BUFFER, mPositionVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 24 * 3, positions, GL_STATIC_DRAW);
-    free(positions);
-
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data,
+                 GL_STATIC_DRAW);
+//    free(positions);
 
 
     // Random color for each instance
     {
-        GLubyte colors[NUM_INSTANCES][4];
-        int instance;
+//        GLubyte colors[NUM_INSTANCES][4];
+//        int instance;
+//
+//        srandom(0);
+//
+//        for (instance = 0; instance < NUM_INSTANCES; instance++) {
+//            colors[instance][0] = (GLubyte) (random() % 255);
+//            colors[instance][1] = (GLubyte) (random() % 255);
+//            colors[instance][2] = (GLubyte) (random() % 255);
+//            colors[instance][3] = 0;
+//        }
 
-        srandom(0);
 
-        for (instance = 0; instance < NUM_INSTANCES; instance++) {
-            colors[instance][0] = (GLubyte) (random() % 255);
-            colors[instance][1] = (GLubyte) (random() % 255);
-            colors[instance][2] = (GLubyte) (random() % 255);
-            colors[instance][3] = 0;
-        }
+
 
         glGenBuffers(1, &mColorVBO);
         glBindBuffer(GL_ARRAY_BUFFER, mColorVBO);
-        glBufferData(GL_ARRAY_BUFFER, NUM_INSTANCES * 4, colors, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data,
+                     GL_STATIC_DRAW);
     }
 
+//
+//    // Allocate storage to store MVP per instance
+//    {
+//        int instance;
+//
+//        // Random angle for each instance, compute the MVP later
+//        for (instance = 0; instance < NUM_INSTANCES; instance++) {
+//            mAngle[instance] = (float) (random() % 32768) / 32767.0f * 360.0f;
+//        }
+//
+//        glGenBuffers(1, &mMvpVBO);
+//        glBindBuffer(GL_ARRAY_BUFFER, mMvpVBO);
+//        glBufferData(GL_ARRAY_BUFFER, NUM_INSTANCES * sizeof(glm::mat4), NULL, GL_DYNAMIC_DRAW);
+//    }
 
-    // Allocate storage to store MVP per instance
-    {
-        int instance;
 
-        // Random angle for each instance, compute the MVP later
-        for (instance = 0; instance < NUM_INSTANCES; instance++) {
-            mAngle[instance] = (float) (random() % 32768) / 32767.0f * 360.0f;
-        }
-
-        glGenBuffers(1, &mMvpVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, mMvpVBO);
-        glBufferData(GL_ARRAY_BUFFER, NUM_INSTANCES * sizeof(glm::mat4), NULL, GL_DYNAMIC_DRAW);
-    }
+    mPVmatLocation = glGetUniformLocation(mProgram, "PVmat");
 
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+//    update(0);
 
-    update(0);
+
+    glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
+    // Accept fragment if it closer to the camera than the former one
+    glDepthFunc(GL_LESS);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 
     return true;
 }
@@ -105,46 +208,63 @@ bool InstanceRenderer::tearDownInternal() {
     return true;
 }
 
-bool InstanceRenderer::renderInternal(long timestampNs) {
 
-//    glEnable(GL_CULL_FACE);
-//    glFrontFace(GL_CCW);
+bool InstanceRenderer::renderInternal(long timestampMills) {
+
+    static long lastTime = 0;
+    static int nbFrames = 0;
+
+    if (lastTime == 0) {
+        lastTime = timestampMills;
+    }
+
+    nbFrames++;
+    if (timestampMills - lastTime >= 1000) { // If last prinf() was more than 1 sec ago
+        // printf and reset timer
+        LOGI("%f ms/frame\n", 1000.0 / double(nbFrames));
+        LOGV("%d frame/sec\n", nbFrames);
+        nbFrames = 0;
+        lastTime += 1000;
+    }
+
+
+//    glUseProgram(mTriangleProgram);
+//    glBindVertexArray(mTriangleVertexArray);
+//    glEnableVertexAttribArray(0);
+//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+//
+//    glDrawArrays(GL_TRIANGLES, 0, 3);
 
 
     glUseProgram(mProgram);
+    glBindVertexArray(mVAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, mPositionVBO);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
-
-    glBindBuffer(GL_ARRAY_BUFFER, mColorVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, mPositionVBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+//
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, 4 * sizeof(GLubyte), NULL);
+    glBindBuffer(GL_ARRAY_BUFFER, mColorVBO);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 
-    // Load each matrix row of the MVP.  Each row gets an increasing attribute location.
-    glVertexAttribPointer(2 + 0, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (const void *) NULL);
-    glVertexAttribPointer(2 + 1, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
-                          (const void *) (sizeof(GLfloat) * 4));
-    glVertexAttribPointer(2 + 2, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
-                          (const void *) (sizeof(GLfloat) * 8));
-    glVertexAttribPointer(2 + 3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
-                          (const void *) (sizeof(GLfloat) * 12));
-    glEnableVertexAttribArray(2 + 0);
-    glEnableVertexAttribArray(2 + 1);
-    glEnableVertexAttribArray(2 + 2);
-    glEnableVertexAttribArray(2 + 3);
+    float angle = glm::radians(timestampMills * 0.1f);
 
-    // One MVP per instance
-    glVertexAttribDivisor(2 + 0, 1);
-    glVertexAttribDivisor(2 + 1, 1);
-    glVertexAttribDivisor(2 + 2, 1);
-    glVertexAttribDivisor(2 + 3, 1);
+    glm::mat4 rrrr = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(
+            sin(timestampMills * 0.003),
+            cos(timestampMills * 0.001),
+            sin(timestampMills * 0.005)
+    ));
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndicateVBO);
+    glm::mat4 pv = mProjectMatrix * mViewMatrix * rrrr;
 
+    glUniformMatrix4fv(mPVmatLocation, 1, GL_FALSE, &pv[0][0]);
 
-    glDrawElementsInstanced(GL_TRIANGLES, mNumIndicateds, GL_UNSIGNED_INT, NULL, NUM_INSTANCES);
+//    glValidateProgram(mProgram);
+//
+//    glCommon::checkGlError("glValidateProgram");
+
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
     return true;
@@ -153,10 +273,8 @@ bool InstanceRenderer::renderInternal(long timestampNs) {
 void InstanceRenderer::update(long timestampNs) {
 //    LOGD("update");
 
-    float aspect = float(mEglWrapper->getWindowWidth()) / float(mEglWrapper->getWindowHeight());
     int numRows;
     int numColumns;
-    glm::mat4 projMatrix = glm::perspective(60.0f, aspect, 1.0f, 20.0f);
 
 //    glm::mat4 viewMatrix = glm::lookAt(glm::vec3(0, 0, -10),
 //                                       glm::vec3(0, 0, 0),
@@ -188,16 +306,27 @@ void InstanceRenderer::update(long timestampNs) {
             mAngle[i] -= 360.0f;
         }
 
-        glm::mat4 rotation = glm::rotate(model, mAngle[i], glm::vec3(1.0, 0.0, 1.0));
+        glm::mat4 rotation = glm::rotate(model, glm::radians(mAngle[i]),
+                                         glm::vec3(1.0f, 0.0f, 1.0f));
 
-        mvpBuf[i] = projMatrix * translation * rotation * model;
-
-
-        LOGD("mvp %d , %s", i, glm::to_string(mvpBuf[i]).c_str());
+        mvpBuf[i] = glm::transpose(translation * rotation * model);
     }
 
     glUnmapBuffer(GL_ARRAY_BUFFER);
 
+
+    //read back
+
+//    glBindBuffer(GL_ARRAY_BUFFER, mMvpVBO);
+//    mvpBuf = (glm::mat4 *) glMapBufferRange(GL_ARRAY_BUFFER, 0,
+//                                            sizeof(glm::mat4) * NUM_INSTANCES,
+//                                            GL_MAP_READ_BIT);
+//
+//    for (int i = 0; i < NUM_INSTANCES; ++i) {
+//        LOGD("mvp %d , %s", i, glm::to_string(mvpBuf[i]).c_str());
+//    }
+//
+//    glUnmapBuffer(GL_ARRAY_BUFFER);
 }
 
 

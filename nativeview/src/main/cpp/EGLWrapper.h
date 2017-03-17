@@ -27,7 +27,7 @@ class Renderer;
 
 class EGLWrapper {
 public:
-    EGLWrapper(EGLNativeWindowType window, std::vector<std::unique_ptr<Renderer>> &&renders,
+    EGLWrapper(EGLNativeWindowType window, std::unique_ptr<Renderer> &&renders,
                AAssetManager *pManager);
 
 
@@ -38,7 +38,7 @@ public:
 
     bool eglTearDown();
 
-    bool render(long timestampNs);
+    bool render(long timestampMills);
 
 
     void resize(int format, int width, int height);
@@ -66,9 +66,9 @@ protected:
     int mWindowWidth;
     int mWindowHeight;
 
-    std::vector<std::unique_ptr<Renderer>> mRenderers;
+    std::unique_ptr<Renderer> mRenderer;
 
-    void renderTask(long timestampNs);
+    void renderTask(long timestampMills);
 
 };
 
