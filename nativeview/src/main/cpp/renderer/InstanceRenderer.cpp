@@ -6,95 +6,94 @@
 #include "InstanceRenderer.h"
 #include <algorithm>
 
+static const GLfloat g_vertex_buffer_data[] = {
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f
+};
+
+// One color for each vertex. They were generated randomly.
+static const GLfloat g_color_buffer_data[] = {
+        0.583f, 0.771f, 0.014f,
+        0.609f, 0.115f, 0.436f,
+        0.327f, 0.483f, 0.844f,
+        0.822f, 0.569f, 0.201f,
+        0.435f, 0.602f, 0.223f,
+        0.310f, 0.747f, 0.185f,
+        0.597f, 0.770f, 0.761f,
+        0.559f, 0.436f, 0.730f,
+        0.359f, 0.583f, 0.152f,
+        0.483f, 0.596f, 0.789f,
+        0.559f, 0.861f, 0.639f,
+        0.195f, 0.548f, 0.859f,
+        0.014f, 0.184f, 0.576f,
+        0.771f, 0.328f, 0.970f,
+        0.406f, 0.615f, 0.116f,
+        0.676f, 0.977f, 0.133f,
+        0.971f, 0.572f, 0.833f,
+        0.140f, 0.616f, 0.489f,
+        0.997f, 0.513f, 0.064f,
+        0.945f, 0.719f, 0.592f,
+        0.543f, 0.021f, 0.978f,
+        0.279f, 0.317f, 0.505f,
+        0.167f, 0.620f, 0.077f,
+        0.347f, 0.857f, 0.137f,
+        0.055f, 0.953f, 0.042f,
+        0.714f, 0.505f, 0.345f,
+        0.783f, 0.290f, 0.734f,
+        0.722f, 0.645f, 0.174f,
+        0.302f, 0.455f, 0.848f,
+        0.225f, 0.587f, 0.040f,
+        0.517f, 0.713f, 0.338f,
+        0.053f, 0.959f, 0.120f,
+        0.393f, 0.621f, 0.362f,
+        0.673f, 0.211f, 0.457f,
+        0.820f, 0.883f, 0.371f,
+        0.982f, 0.099f, 0.879f
+};
 
 bool InstanceRenderer::setUpInternal() {
 
-
-    static const GLfloat g_vertex_buffer_data[] = {
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, 1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f
-    };
-
-    // One color for each vertex. They were generated randomly.
-    static const GLfloat g_color_buffer_data[] = {
-            0.583f, 0.771f, 0.014f,
-            0.609f, 0.115f, 0.436f,
-            0.327f, 0.483f, 0.844f,
-            0.822f, 0.569f, 0.201f,
-            0.435f, 0.602f, 0.223f,
-            0.310f, 0.747f, 0.185f,
-            0.597f, 0.770f, 0.761f,
-            0.559f, 0.436f, 0.730f,
-            0.359f, 0.583f, 0.152f,
-            0.483f, 0.596f, 0.789f,
-            0.559f, 0.861f, 0.639f,
-            0.195f, 0.548f, 0.859f,
-            0.014f, 0.184f, 0.576f,
-            0.771f, 0.328f, 0.970f,
-            0.406f, 0.615f, 0.116f,
-            0.676f, 0.977f, 0.133f,
-            0.971f, 0.572f, 0.833f,
-            0.140f, 0.616f, 0.489f,
-            0.997f, 0.513f, 0.064f,
-            0.945f, 0.719f, 0.592f,
-            0.543f, 0.021f, 0.978f,
-            0.279f, 0.317f, 0.505f,
-            0.167f, 0.620f, 0.077f,
-            0.347f, 0.857f, 0.137f,
-            0.055f, 0.953f, 0.042f,
-            0.714f, 0.505f, 0.345f,
-            0.783f, 0.290f, 0.734f,
-            0.722f, 0.645f, 0.174f,
-            0.302f, 0.455f, 0.848f,
-            0.225f, 0.587f, 0.040f,
-            0.517f, 0.713f, 0.338f,
-            0.053f, 0.959f, 0.120f,
-            0.393f, 0.621f, 0.362f,
-            0.673f, 0.211f, 0.457f,
-            0.820f, 0.883f, 0.371f,
-            0.982f, 0.099f, 0.879f
-    };
 
     float aspect = float(mEglWrapper->getWindowWidth()) / float(mEglWrapper->getWindowHeight());
 
 
     mProjectMatrix = glm::perspective(45.0f, aspect, 1.0f, 100.0f);
     mViewMatrix = glm::lookAt(
-            glm::vec3(0, 0, 7), // Camera is here
+            glm::vec3(0, 0, 20), // Camera is here
             glm::vec3(0, 0, 0), // and looks here
             glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
@@ -116,42 +115,12 @@ bool InstanceRenderer::setUpInternal() {
     glDeleteShader(fs);
     glDeleteShader(vs);
 
-
-//    GLfloat *positions;
-//    GLuint *indices;
-//
-//    int numIndices = esGenCube(0.1f, &positions, NULL, NULL, &indices);
-//
-//    mNumIndicateds = numIndices;
-//
-//    //indicates
-//    glGenBuffers(1, &mIndicateVBO);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndicateVBO);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * numIndices, indices, GL_STATIC_DRAW);
-//    free(indices);
-//
     glGenBuffers(1, &mPositionVBO);
     glBindBuffer(GL_ARRAY_BUFFER, mPositionVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data,
                  GL_STATIC_DRAW);
-//    free(positions);
 
-
-    // Random color for each instance
     {
-//        GLubyte colors[NUM_INSTANCES][4];
-//        int instance;
-//
-//        srandom(0);
-//
-//        for (instance = 0; instance < NUM_INSTANCES; instance++) {
-//            colors[instance][0] = (GLubyte) (random() % 255);
-//            colors[instance][1] = (GLubyte) (random() % 255);
-//            colors[instance][2] = (GLubyte) (random() % 255);
-//            colors[instance][3] = 0;
-//        }
-
-
 
 
         glGenBuffers(1, &mColorVBO);
@@ -160,23 +129,8 @@ bool InstanceRenderer::setUpInternal() {
                      GL_STATIC_DRAW);
     }
 
-//
-//    // Allocate storage to store MVP per instance
-//    {
-//        int instance;
-//
-//        // Random angle for each instance, compute the MVP later
-//        for (instance = 0; instance < NUM_INSTANCES; instance++) {
-//            mAngle[instance] = (float) (random() % 32768) / 32767.0f * 360.0f;
-//        }
-//
-//        glGenBuffers(1, &mMvpVBO);
-//        glBindBuffer(GL_ARRAY_BUFFER, mMvpVBO);
-//        glBufferData(GL_ARRAY_BUFFER, NUM_INSTANCES * sizeof(glm::mat4), NULL, GL_DYNAMIC_DRAW);
-//    }
-
-
     mPVmatLocation = glGetUniformLocation(mProgram, "PVmat");
+    mTimestampLocation = glGetUniformLocation(mProgram, "timestampS");
 
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -247,24 +201,14 @@ bool InstanceRenderer::renderInternal(long timestampMills) {
     glBindBuffer(GL_ARRAY_BUFFER, mColorVBO);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-
-    float angle = glm::radians(timestampMills * 0.1f);
-
-    glm::mat4 rrrr = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(
-            sin(timestampMills * 0.003),
-            cos(timestampMills * 0.001),
-            sin(timestampMills * 0.005)
-    ));
-
-    glm::mat4 pv = mProjectMatrix * mViewMatrix * rrrr;
+    glm::mat4 pv = mProjectMatrix * mViewMatrix;
 
     glUniformMatrix4fv(mPVmatLocation, 1, GL_FALSE, &pv[0][0]);
+    glUniform1f(mTimestampLocation, GLfloat(timestampMills) / GLfloat(1e3));
 
-//    glValidateProgram(mProgram);
-//
-//    glCommon::checkGlError("glValidateProgram");
-
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+//    glDrawArrays(GL_TRIANGLES, 0, 36);
+//    glDrawArrays(GL_TRIANGLES,0,36)
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 36, 100);
 
 
     return true;

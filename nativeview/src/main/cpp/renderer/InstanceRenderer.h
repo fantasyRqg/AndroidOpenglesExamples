@@ -47,12 +47,14 @@ private:
     GLuint mColorVBO;
     GLfloat mAngle[NUM_INSTANCES];
 
-    int mNumIndicateds;
 
     GLint mPVmatLocation;
-
+    GLint mTimestampLocation;
     glm::mat4 mProjectMatrix;
     glm::mat4 mViewMatrix;
+
+
+
 
 };
 
