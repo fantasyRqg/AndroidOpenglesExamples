@@ -10,8 +10,7 @@
 
 
 #include "GlThread.h"
-#include "renderer/InstanceRenderer.h"
-#include "renderer/TriangleRenderer.h"
+#include "renderer/PolygonOffsetRenderer.h"
 
 
 #undef TAG
@@ -43,7 +42,7 @@ void nativeClassInit(JNIEnv *env, jclass clazz) {
 }
 
 void surfaceCreated(JNIEnv *env, jobject thiz, jobject surface, jobject assetManager) {
-    std::unique_ptr<Renderer> ptr(new InstanceRenderer());
+    std::unique_ptr<Renderer> ptr(new PolygonOffsetRenderer());
 
     //java level hold assetManager ref
     AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);

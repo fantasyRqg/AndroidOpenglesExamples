@@ -7,9 +7,16 @@
 
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
-#include <glm/glm.hpp>
 #include <android/asset_manager.h>
 #include <common.h>
+
+
+#define GLM_ENABLE_EXPERIMENTAL
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/ext.hpp>
 
 #include "EGLWrapper.h"
 
@@ -61,6 +68,8 @@ protected:
     virtual bool tearDownInternal() = 0;
 
     virtual bool renderInternal(long timestampMills) = 0;
+
+    float getAspect();
 
 };
 

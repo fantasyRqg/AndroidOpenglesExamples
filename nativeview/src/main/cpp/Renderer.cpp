@@ -101,5 +101,9 @@ void Renderer::setEglWrapper(EGLWrapper *wrapper) {
 
 }
 
+float Renderer::getAspect() {
+    return float(mEglWrapper->getWindowWidth()) / float(mEglWrapper->getWindowHeight());;
+}
+
 
 

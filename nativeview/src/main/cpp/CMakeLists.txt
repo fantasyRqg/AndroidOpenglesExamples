@@ -32,6 +32,7 @@ add_library(nativeGlesView SHARED
         EGLWrapper.cpp
         renderer/TriangleRenderer.cpp
         renderer/InstanceRenderer.cpp
+        renderer/PolygonOffsetRenderer.cpp
         )
 
 target_include_directories(nativeGlesView PRIVATE
