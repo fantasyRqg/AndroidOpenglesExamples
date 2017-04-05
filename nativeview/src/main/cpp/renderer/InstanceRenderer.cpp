@@ -4,7 +4,6 @@
 
 
 #include "InstanceRenderer.h"
-#include <algorithm>
 
 static const GLfloat g_vertex_buffer_data[] = {
         -1.0f, -1.0f, -1.0f,
@@ -114,6 +113,7 @@ bool InstanceRenderer::setUpInternal() {
 
     glDeleteShader(fs);
     glDeleteShader(vs);
+
 
     glGenBuffers(1, &mPositionVBO);
     glBindBuffer(GL_ARRAY_BUFFER, mPositionVBO);
